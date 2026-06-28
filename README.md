@@ -11,13 +11,20 @@ A monorepo structure is used to logically divide the frontend and backend archit
 ```text
 med-assist/
 ├── backend/                  # Python/FastAPI service (transcription & AI processing pipelines)
-│   └── README.md             # Backend instructions placeholder
-├── frontend/                 # React/Next.js client-facing web application
-│   └── README.md             # Frontend instructions placeholder
+│   ├── app/                  # Application core, config, api, and business logic
+│   ├── main.py               # Backend main entrypoint
+│   ├── Dockerfile            # Backend Docker build instructions
+│   └── requirements.txt      # Python dependencies list
+├── frontend/                 # React client-facing web application
+│   ├── src/                  # Components, pages, routing, and assets
+│   ├── Dockerfile            # Node dev environment container setup
+│   ├── vite.config.ts        # Vite build tool settings
+│   └── package.json          # Script runners and frontend dependencies
 ├── docker/                   # Custom configuration templates and Docker build context files
 │   └── postgres/
 │       └── init.sql          # SQL script executed automatically on container initialization
 ├── docs/                     # Platform architecture diagrams and documentation
+├── prompts/                  # Version-controlled development prompts registry
 ├── .env.example              # Template for environment variables (version controlled)
 ├── .env                      # Local environment configurations (contains secrets; gitignored)
 ├── .gitignore                # Global gitignore configuration
@@ -106,14 +113,14 @@ docker compose logs -f postgres
      * Click **Save**.
 
 ### 2. Verify Services Operation
-To verify that the database and backend services are running and healthy:
+To verify that the database, backend, and frontend services are running and healthy:
 
 #### Method A: Docker Compose Health Status
 Run the following command to check container health statuses:
 ```bash
 docker compose ps
 ```
-The output should indicate `healthy` under the STATUS column for both the database and backend containers.
+The output should indicate `healthy` under the STATUS column for the database and backend containers, and `running` for the frontend container.
 
 #### Method B: Execute SQL Query via Docker CLI (Database Verification)
 Run a test query directly inside the container without external tools:
@@ -134,3 +141,8 @@ If successful, it returns:
   "service": "AI Medical Scribe Platform"
 }
 ```
+
+#### Method D: Frontend Web App Interface
+Open your browser and navigate to the frontend port (exposes port `5173` to your host):
+* URL: [http://localhost:5173](http://localhost:5173)
+* Verify that you see the homepage header "AI Medical Scribe Platform", the "Backend Status: (Not Connected Yet)" badge, and a button to navigate to the Login placeholder screen.

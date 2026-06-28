@@ -17,11 +17,16 @@ class Settings(BaseSettings):
         "http://127.0.0.1:5173",
     ]
 
-    # Database configuration (for future phases)
+    # Database configuration
+    POSTGRES_SERVER: str = "localhost"
     POSTGRES_DB: str = "med_scribe_dev"
     POSTGRES_USER: str = "scribe_admin"
     POSTGRES_PASSWORD: str = "secure_development_password_99"
     POSTGRES_PORT: int = 5433
+
+    @property
+    def database_url_async(self) -> str:
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     # Tells pydantic-settings to read variables from the parent directory's .env file
     model_config = SettingsConfigDict(
