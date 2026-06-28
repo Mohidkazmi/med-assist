@@ -30,6 +30,34 @@ services:
       - med_assist_net
 
   # =========================================================================
+  # Backend API Service (FastAPI)
+  # =========================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: med_assist_backend
+    restart: always
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      # Bind mount backend folder to container to enable hot-reloading in dev
+      - ./backend:/app
+    environment:
+      - ENVIRONMENT=development
+    env_file:
+      - .env
+    healthcheck:
+      # Zero-dependency healthcheck using Python's standard library
+      test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/health\")'"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - med_assist_net
+
+  # =========================================================================
   # pgAdmin Database Management GUI Service
   # =========================================================================
   pgadmin:

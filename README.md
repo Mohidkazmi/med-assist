@@ -28,11 +28,12 @@ med-assist/
 
 ## Infrastructure Overview
 
-We use **Docker Compose** to locally orchestrate structural infrastructure components:
+We use **Docker Compose** to locally orchestrate our development infrastructure:
 1. **PostgreSQL 16**: Relational database storing patient metadata, transcription logs, and system audits.
 2. **pgAdmin 4**: Web-based administration tool for Postgres management.
+3. **Backend Service (FastAPI)**: REST API layer serving endpoints and coordinating transcription workflows (exposed on host port `8001` to resolve conflicts, default `8000`).
 
-Both services are connected via an isolated Docker bridge network (`med_assist_net`) and persist database configurations and state across container restarts via named volumes (`postgres_data` and `pgadmin_data`).
+All services are connected via an isolated Docker bridge network (`med_assist_net`) and persist configurations across container restarts.
 
 ---
 
@@ -90,7 +91,7 @@ docker compose logs -f postgres
 1. Start the Docker containers: `docker compose up -d`
 2. Open your web browser and navigate to the pgAdmin portal: [http://localhost:5050](http://localhost:5050)
 3. Log in using pgAdmin credentials specified in your `.env` file:
-   * **Email:** `admin@medscribe.local` (or your configured `PGADMIN_DEFAULT_EMAIL`)
+   * **Email:** `admin@medscribe.com` (or your configured `PGADMIN_DEFAULT_EMAIL`)
    * **Password:** `admin_secret_pass_123` (or your configured `PGADMIN_DEFAULT_PASSWORD`)
 4. Once inside the dashboard, register the database server:
    * Right-click on **Servers** -> **Register** -> **Server...**
@@ -104,19 +105,32 @@ docker compose logs -f postgres
      * **Password:** `secure_development_password_99` (matching `POSTGRES_PASSWORD` in `.env`)
      * Click **Save**.
 
-### 2. Verify Database Operation
-To verify that the PostgreSQL server is running and healthy:
+### 2. Verify Services Operation
+To verify that the database and backend services are running and healthy:
 
 #### Method A: Docker Compose Health Status
 Run the following command to check container health statuses:
 ```bash
 docker compose ps
 ```
-The output should indicate `healthy` under the STATUS column for the database container.
+The output should indicate `healthy` under the STATUS column for both the database and backend containers.
 
-#### Method B: Execute SQL Query via Docker CLI
+#### Method B: Execute SQL Query via Docker CLI (Database Verification)
 Run a test query directly inside the container without external tools:
 ```bash
-docker exec -it med_assist_postgres psql -U scribe_admin -d med_scribe_dev -c "SELECT version();"
+docker exec -i med_assist_postgres psql -U scribe_admin -d med_scribe_dev -c "SELECT version();"
 ```
 If the connection is successful, it will return the installed version of PostgreSQL.
+
+#### Method C: Backend Health Check Endpoint
+Query the health check endpoint from your host machine (using port `8001` or your configured `BACKEND_PORT`):
+```bash
+curl -i http://localhost:8001/health
+```
+If successful, it returns:
+```json
+{
+  "status": "healthy",
+  "service": "AI Medical Scribe Platform"
+}
+```
