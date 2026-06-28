@@ -1,0 +1,66 @@
+# docker-compose.yml for AI Medical Scribe Platform
+
+services:
+  # =========================================================================
+  # PostgreSQL Database Service
+  # =========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: med_assist_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      # Named volume for persistent database storage
+      - postgres_data:/var/lib/postgresql/data
+      # SQL script mounted to initialize DB schemas/users on first startup
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      # Verifies the Postgres server is ready to accept connections
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - med_assist_net
+
+  # =========================================================================
+  # pgAdmin Database Management GUI Service
+  # =========================================================================
+  pgadmin:
+    image: dpage/pgadmin4:8.8
+    container_name: med_assist_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      # Named volume for persistent pgadmin configuration (saved server connections)
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - med_assist_net
+
+# =========================================================================
+# Volumes and Networks Definitions
+# =========================================================================
+volumes:
+  # Host-managed persistent storage directories
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  # Custom bridge network for isolated service-to-service communication
+  med_assist_net:
+    driver: bridge

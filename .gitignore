@@ -1,0 +1,121 @@
+# ==========================================
+# AI Medical Scribe Platform - Git Ignore
+# ==========================================
+
+# System / OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs and Editors
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*~
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Docker / Containerization
+.docker/
+docker-compose.override.yml
+# If any host-mounted data folders are created, prevent them from being committed:
+data/
+pgadmin_data/
+postgres_data/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.ipynb_checkpoints
+
+# Python Virtual Environments
+.env/
+venv/
+ENV/
+env/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Python Testing / Coverage
+.htmlcov/
+.tox/
+.nosetests/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Node.js / JavaScript
+node_modules/
+jspm_packages/
+.npm/
+.eslintcache
+.parcel-cache
+.stylelintcache
+.docusaurus/
+.next/
+out/
+.nuxt/
+.expo/
+dist/
+tmp/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Main Database / Local persistence (if SQLite or dumps are used)
+*.db
+*.sqlite
+*.sql.gz
+*.dump
