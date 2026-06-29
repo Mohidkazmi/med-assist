@@ -14,3 +14,9 @@ pydantic-settings>=2.3.0,<3.0.0
 SQLAlchemy>=2.0.30,<2.1.0
 alembic>=1.13.0,<1.14.0
 asyncpg>=0.29.0,<0.30.0  # Asynchronous Postgres driver
+
+# Authentication & Security
+python-jose[cryptography]>=3.3.0,<4.0.0  # JWT token creation & verification
+passlib[bcrypt]>=1.7.4,<2.0.0             # Password hashing (bcrypt algorithm)
+bcrypt>=3.1.0,<4.0.0                       # Pin bcrypt: passlib 1.7.4 is incompatible with bcrypt 4+
+python-multipart>=0.0.9,<0.1.0            # Required for OAuth2 form-body login

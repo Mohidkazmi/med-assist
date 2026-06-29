@@ -1,6 +1,9 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+import app.db.base  # noqa: F401 — registers all ORM models with SQLAlchemy mapper
+from app.api.v1.router import api_v1_router
 from app.core.config import settings
 
 app = FastAPI(
@@ -19,6 +22,13 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+# ---------------------------------------------------------------------------
+# Mount versioned API router
+# ---------------------------------------------------------------------------
+# All endpoints under /api/v1/* are registered here.
+# ---------------------------------------------------------------------------
+app.include_router(api_v1_router, prefix=settings.API_V1_STR)
 
 
 # Health check endpoint

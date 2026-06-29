@@ -2,15 +2,15 @@
 # AI Medical Scribe Platform - Frontend Service Dockerfile (Development)
 # =========================================================================
 
-FROM node:22-bookworm-slim
+FROM node:20-bookworm-slim
 
 WORKDIR /app
 
 # Copy package management files
 COPY package*.json ./
 
-# Install npm dependencies (using local cache workaround if needed, else standard install)
-RUN npm install
+# Install npm dependencies 
+RUN npm install --include=optional
 
 # Copy application source files
 COPY . .
@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 5173
 
 # Execute Vite development server
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev", "--", "--host"]

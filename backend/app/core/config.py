@@ -28,6 +28,16 @@ class Settings(BaseSettings):
     def database_url_async(self) -> str:
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
+    # -------------------------------------------------------------------------
+    # JWT / Authentication configuration
+    # -------------------------------------------------------------------------
+    # SECURITY: JWT_SECRET_KEY MUST be set in your .env file.
+    # Generate a strong key with:  openssl rand -hex 32
+    JWT_SECRET_KEY: str = "CHANGE_ME_BEFORE_PRODUCTION"
+    JWT_ALGORITHM: str = "HS256"
+    # How long (in minutes) an access token remains valid
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+
     # Tells pydantic-settings to read variables from the parent directory's .env file
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), ".env"),
